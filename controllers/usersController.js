@@ -31,7 +31,7 @@ exports.signup = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).json({ message: err });
+        res.status(500).json({ err });
       });
 
   }
@@ -64,7 +64,37 @@ exports.login = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).json({message: err});
+        res.status(500).json({err});
       });
+  }
+}
+
+exports.getUsers = (req, res) => {
+  if(req.auth) {
+    const type = req.params.type;
+    users.find({ user_type: type})
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  } else {
+    res.status(req.status).json({ message: req.message});
+  }
+}
+
+exports.getUserById = (req, res) => {
+  if(req.auth) {
+    const id = req.params.id;
+    users.find({ _id: id})
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  } else {
+    res.status(req.status).json({ message: req.message});
   }
 }
