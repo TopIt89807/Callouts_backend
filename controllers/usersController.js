@@ -89,7 +89,7 @@ exports.getUserById = (req, res) => {
     const id = req.params.id;
     users.find({ _id: id})
       .then((result) => {
-        res.status(200).json(result);
+        res.status(200).json(result[0]);
       })
       .catch((err) => {
         res.status(500).json(err);
