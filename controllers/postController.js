@@ -7,6 +7,7 @@ exports.add = (req, res) => {
         if(!master_id)
             res.status(404).json({ message: 'Master User Not Found!' });
         else {
+            const newPost = new post(req.body);
             newPost.save();
             res.status(200).json({ message: 'New Post Added!' });
         }
@@ -25,10 +26,11 @@ exports.update = (req, res) => {
                 .then((results) => {
                     if(results.length != 0) {
                         const post = results[0];
-                        post.master_id = master_id;
-                        post.text = text;
-                        post.image = image;
-                        post.thumb_img = thumb_img;
+                        Object.assign(post, req.body);
+                        // post.master_id = master_id;
+                        // post.text = text;
+                        // post.image = image;
+                        // post.thumb_img = thumb_img;
                         post.save();
                     } else {
                         res.status(400).json({ message: 'Master User Not Found!'});
