@@ -4,21 +4,27 @@ const follow = require('../models/follow');
 exports.add = (req, res) => {
     if(req.auth) {
         const {follower, following} = req.body;
-        users.find({$or: [{_id: follower}, {_id: following}]})
+        follow.find({follower_id: follower, following_id: following})
             .then((results) => {
-                if(results.length == 2) {
-
-                    const newFollow = new follow({
-                        follower_id: follower,
-                        following_id: following,
-                      });
-
-                    newFollow.save();
-                    res.status(201).json({ message: 'Follow Action Completed!'});
-            
-                }else {
-                    res.status(400).json({ message: "Follower and following user must be exist."})
+                if(results.length != 0) {
+                    return res.status(409).json({ message: 'Already followed!'});
                 }
+                users.find({$or: [{_id: follower}, {_id: following}]})
+                .then((results) => {
+                    if(results.length == 2) {
+    
+                        const newFollow = new follow({
+                            follower_id: follower,
+                            following_id: following,
+                          });
+    
+                        newFollow.save();
+                        res.status(201).json({ message: 'Follow Action Completed!'});
+                
+                    }else {
+                        res.status(400).json({ message: "Follower and following user must be exist."})
+                    }
+                })
             })
             .catch((err) => {
                 res.status(500).json(err);

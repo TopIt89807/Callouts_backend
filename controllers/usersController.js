@@ -55,6 +55,7 @@ exports.login = (req, res) => {
         if(bcrypt.compareSync(password, user.hashed_password)) {
           const token = jwt.sign(user.toJSON(), config.secret, { expiresIn: config.expiresIn})
           const info = {
+            id: user._id,
             email: user.email,
             user_type: user.user_type
           }
@@ -74,7 +75,7 @@ exports.getUsers = (req, res) => {
     const type = req.params.type;
     users.find({ user_type: type})
       .then((result) => {
-        res.status(200).json(result);
+        res.status(200).json({list: result});
       })
       .catch((err) => {
         res.status(500).json(err);
