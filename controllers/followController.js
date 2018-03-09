@@ -80,11 +80,12 @@ exports.getFollowings = (req, res) => {
     if(req.auth) {
         const {follower} = req.body;
         follow.find({ follower_id: follower })
+            .populate('following_id')
             .then((results) => {
                 if(results.length == 0)
                     res.status(404).json({ message: 'Following Not Found' });
                 else
-                    res.status(200).json(results);
+                    res.status(200).json({list: results});
             })
             .catch((err) => {
                 res.status(400).json(err);

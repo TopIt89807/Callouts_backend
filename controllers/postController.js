@@ -81,9 +81,9 @@ exports.getPosts = (req, res) => {
             post.find({ master_id: master_id})
                 .then((results) => {
                     if(results.length == 0)
-                      res.status(404).json({ message: 'No Posts' });
+                      res.status(404).json({ message: 'No Post' });
                     else {
-                        res.status(200).json(results);
+                        res.status(200).json({list: results});
                     }
                 })
                 .catch((err) => {
