@@ -94,3 +94,23 @@ exports.getPosts = (req, res) => {
         res.status(req.status).json({ message: req.message});
     }
 }
+
+exports.getAll = (req, res) => {
+    if(req.auth) {
+        post.find({}, null, {sort: {created_date: -1}})
+            // .limit(100)
+            .populate('master_id')
+            .then((results) => {
+                if(results.length == 0)
+                    res.status(404).json({ message: 'No Post' });
+                else {
+                    res.status(200).json({list: results});
+                }
+            })
+            .catch((err) => {
+                res.status(500).json(err);
+            })
+    } else {
+        res.status(req.status).json({ message: req.message});
+    }
+}
