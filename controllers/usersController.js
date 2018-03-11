@@ -1,4 +1,5 @@
 const users = require('../models/users');
+const follow = require('../models/follow');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config.json');
@@ -73,9 +74,21 @@ exports.login = (req, res) => {
 exports.getUsers = (req, res) => {
   if(req.auth) {
     const type = req.params.type;
+    const {follower} = req.body;
     users.find({ user_type: type})
       .then((result) => {
-        res.status(200).json({list: result});
+        Promise.all(result.map((item) => follow.find({follower_id: follower, following_id: item._id}) ))
+        .then((followlists) => {
+          var final = result.map((item, index) => {
+            var isFollowing = followlists[index].length != 0? true: false;
+            return {
+              ...item._doc,
+              isFollowing
+            }
+          })
+          res.status(200).json({list: final});
+        });
+        
       })
       .catch((err) => {
         res.status(500).json(err);
