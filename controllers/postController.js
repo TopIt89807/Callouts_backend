@@ -7,6 +7,10 @@ exports.add = (req, res) => {
         if(!master_id)
             res.status(404).json({ message: 'Master User Not Found!' });
         else {
+            if(!text) delete req.body['text'];
+            if(!image) delete req.body['image'];
+            if(!thumb_img) delete req.body['thumb_img'];
+            console.log(req.body);
             const newPost = new post(req.body);
             newPost.save();
             res.status(200).json({ message: 'New Post Added!' });
