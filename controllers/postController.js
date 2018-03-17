@@ -10,7 +10,6 @@ exports.add = (req, res) => {
             if(!text) delete req.body['text'];
             if(!image) delete req.body['image'];
             if(!thumb_img) delete req.body['thumb_img'];
-            console.log(req.body);
             const newPost = new post(req.body);
             newPost.save();
             res.status(200).json({ message: 'New Post Added!' });
@@ -37,7 +36,7 @@ exports.update = (req, res) => {
                         // post.thumb_img = thumb_img;
                         post.save();
                     } else {
-                        res.status(400).json({ message: 'Master User Not Found!'});
+                        res.status(400).json({ message: 'Post Not Found!'});
                     }
                 })
                 .then(() => {
@@ -84,9 +83,7 @@ exports.getPosts = (req, res) => {
         else {
             post.find({ master_id: master_id})
                 .then((results) => {
-                    if(results.length == 0)
-                      res.status(404).json({ message: 'No Post' });
-                    else {
+                    {
                         res.status(200).json({list: results});
                     }
                 })
